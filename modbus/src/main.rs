@@ -71,7 +71,7 @@ fn us_mbcrc16(puc_frame: &Vec<u8>, us_len: usize ) -> (u8, u8)
 
 
 //Função para ler os input registers
-fn read_input_reg(mut port: Box<dyn SerialPort>, endereco_slave: u8, mut init_address: u16, num_reg_read: u16, regs: &mut Vec<u16>) -> i32{
+fn read_input_reg(port: &mut Box<dyn SerialPort>, endereco_slave: u8, mut init_address: u16, num_reg_read: u16, regs: &mut Vec<u16>) -> i32{
 
 	let mut mensagem:Vec<u8> = vec![0; 8]; //vetor  mensagem
 	let tamanho_resposta= 5+(2*num_reg_read);
@@ -138,7 +138,7 @@ fn main() {
     }
     println!("Abrinda porta serial /dev/ttyACM0!");
     let port_name_print = port_name.clone();
-    let port = serialport::new(port_name, 115_200)
+    let mut port = serialport::new(port_name, 115_200)
         .timeout(Duration::from_millis(10))
         .open().expect("Failed to open port");
 
@@ -154,12 +154,14 @@ fn main() {
     let mut received_float:Vec<f32> = vec![0.0; number_of_regs];
     loop {
         //let port_clone = port.try_clone().expect("Failed to clone");
+        /*
         let port_clone = port.try_clone();
         let port_clone = match port_clone {
             Ok(serialport) =>  serialport,
             Err(_) => return,
         };
-        if read_input_reg(port_clone, 10, 50000, number_of_regs as u16, &mut received) >= 0{
+        */
+        if read_input_reg(&mut port, 10, 50000, number_of_regs as u16, &mut received) >= 0{
             for i in 0..received_float.len() {
                 received_float[i] = received[i] as f32;
                 received_float[i] = received_float[i] * 0.000805861;
