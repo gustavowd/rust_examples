@@ -170,9 +170,6 @@ fn main() {
             for i in 0..received_float.len() {
                 received_float[i] = received[i] as f32;
                 received_float[i] = received_float[i] * 0.000805861;
-                
-                received_float[i] = received[i] as f32;
-                received_float[i] = received_float[i] * 0.000805861;
             }
             println!("Dado reccebido: {:?}", received_float);
             thread::sleep(Duration::new(0, 100000000));  
