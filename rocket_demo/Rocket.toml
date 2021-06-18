@@ -2,6 +2,9 @@
 certs = "/home/gustavo/Documentos/git/IEEE-2030.5-Client/pki/RSA-4096/slave.pem"
 key = "/home/gustavo/Documentos/git/IEEE-2030.5-Client/pki/RSA-4096/slave.key"
 
-[development]
-address = "localhost"
+#[development]
+#address = "localhost"
+#port = 8443
+
+[debug]
 port = 8443
