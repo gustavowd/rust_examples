@@ -22,7 +22,8 @@ fn edev(id: usize) -> Result<String, Status> {
         <sFDI>111576577659</sFDI>
         <FunctionSetAssignmentsListLink href="/dcap/edev/1/fsa" all="1"/>
         <RegistrationLink href="/dcap/edev/1/reg"/>
-    </EndDevice>"#;
+    </EndDevice>
+"#;
         return Ok(ret.to_string());
     }
     return Err(Status::NotFound);
