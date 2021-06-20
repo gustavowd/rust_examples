@@ -1,13 +1,15 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 use rocket::*;
-use rocket::http::Status;
+use rocket::http::{Status, ContentType, MediaType};
+//use rocket::response::content;
+
 
 #[get("/hello/<name>/<age>")]
 fn hello(name: String, age: u8) -> String {
     format!("Hello, {} year old name {}!", age, name)
 }
 
-#[get("/dcap/edev/<id>")]
+#[get("/dcap/edev/<id>",format = "application/sep+xml")]
 fn edev(id: usize) -> Result<String, Status> {
     if id == 0 {
         let ret: String = format!("EndDevice {} exists!", id);
@@ -29,6 +31,16 @@ fn edev(id: usize) -> Result<String, Status> {
     return Err(Status::NotFound);
 }
 
+#[post("/dcap/edev/<id>/di", format = "application/sep+xml", data = "<user_input>")]
+fn edev_post(id: usize, user_input: String) -> Status {
+    if id < 2 {
+        println!("Post of id {} worked!
+        {}", id, user_input);
+        return Status::NoContent;
+    }
+    return Status::NotFound;
+}
+
 #[get("/dcap/edev/<id>/der/<der_id>/dera")]
 fn dera(id: usize, der_id: usize) -> String {
     if id == 0 && der_id ==1 {
@@ -38,14 +50,21 @@ fn dera(id: usize, der_id: usize) -> String {
     }
 }
 
+/*
 #[get("/dcap2")]
 fn just_fail() -> Status {
     Status::NotAcceptable
 }
+*/
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![hello, edev, dera, just_fail])
+    let custom = MediaType::new("application", "sep+xml");
+    assert_eq!(custom.top(), "application");
+    assert_eq!(custom.sub(), "sep+xml");
+    let custom = ContentType::parse_flexible("application/sep+xml");
+    assert_eq!(custom, Some(ContentType::new("application", "sep+xml")));
+    rocket::build().mount("/", routes![hello, edev, edev_post, dera])
 }
 
 /*fn main() {
